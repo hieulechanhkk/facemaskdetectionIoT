@@ -57,7 +57,7 @@ def face_profile(faces_rett, colorr, gray, boxx, imagee):
             try:
                 os.mkdir(f'Photos_capture/{student_code}')
             except:
-                continue
+                print('')
             cv2.imwrite(f'Photos_capture/{student_code}/{student_code}_{dt_string}.jpg', imagee)
             Upload_img_to_firebase(f'Photos_capture/{student_code}/{student_code}_{dt_string}.jpg', student_code, dt_string)
             preLabel = label
