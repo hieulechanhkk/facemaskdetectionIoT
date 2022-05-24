@@ -1,17 +1,20 @@
 import numpy as np
 import imutils
 import cv2
+import os
 from imutils.video import VideoStream
 haar_casecade = cv2.CascadeClassifier('haar_face.xml')
+def read_path_img():
+    path = r'student_datasets'
+    return os.listdir(path)
 
-CATEGORIES = ['_19521501', '_19522430', '_19521799', '_19529999', '_19522347']
-
+#CATEGORIES = ['_19521501', '_19522430', '_19521799', '_19529999', '_19522347']
+CATEGORIES = read_path_img()
 face_recognizer = cv2.face.LBPHFaceRecognizer_create()
 face_recognizer.read('face_trained.yml')
 vs = VideoStream(src=0).start()
 while True:
     image = vs.read()
-    image = cv2.imread('student_datasets/_19522347/120.jpg')
     image = cv2.flip(image, 1)
     image = imutils.resize(image, width=800)
 

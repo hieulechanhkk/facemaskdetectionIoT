@@ -62,10 +62,35 @@ def face_profile(faces_rett, colorr, gray, boxx, imagee):
             Upload_img_to_firebase(f'Photos_capture/{student_code}/{student_code}_{dt_string}.jpg', student_code, dt_string)
             preLabel = label
 
+def gstreamer_pipeline(
+    capture_width=1920,
+    capture_height=1080,
+    display_width=960,
+    display_height=540,
+    framerate=30,
+    flip_method=0,
+):
+    return (
+        "nvarguscamerasrc ! "
+        "video/x-raw(memory:NVMM), "
+        "width=(int)%d, height=(int)%d, framerate=(fraction)%d/1 ! "
+        "nvvidconv flip-method=%d ! "
+        "video/x-raw, width=(int)%d, height=(int)%d, format=(string)BGRx ! "
+        "videoconvert ! "
+        "video/x-raw, format=(string)BGR ! appsink drop=True"
+        % (
+            capture_width,
+            capture_height,
+            framerate,
+            flip_method,
+            display_width,
+            display_height,
+        )
+    )
 
 init_firebase_authorize()
 
-arduino = SerialObject('COM6', 115200)
+arduino = SerialObject('COM5', 115200)
 
 prototxtPath = r'face_detect/deploy.prototxt.txt'
 weightPath = r'face_detect/res10_300x300_ssd_iter_140000.caffemodel'
@@ -79,12 +104,12 @@ face_recognizer.read('face_recognize/face_trained.yml')
 model = load_model("mask_detector.model")
 faceNet = cv2.dnn.readNet(prototxtPath, weightPath)
 
-vs = VideoStream(src=0).start()
+vs = cv2.VideoCapture(gstreamer_pipeline(), cv2.CAP_GSTREAMER)
 flagNMask = 0
 flagMask = 0
 
 while True:
-    image = vs.read()
+    ret,image = vs.read()
     image = cv2.flip(image, 1)
     image = imutils.resize(image, width=800)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)

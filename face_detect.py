@@ -99,7 +99,7 @@ while True:
         cv2.putText(image, label, (x0+5, y0-9), cv2.FONT_HERSHEY_SIMPLEX, 0.50, (255, 255, 255), 2)
         cv2.rectangle(image, (x0, y0), (x1, y1), color, 2)
 
-    cv2.imshow('I', image)
+    cv2.imshow('Image', image)
     key = cv2.waitKey(1)
     if key == 27:
         break

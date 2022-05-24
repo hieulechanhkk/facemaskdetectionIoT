@@ -2,8 +2,12 @@ import os
 import cv2 as cv
 import numpy as np
 
-people = ['_19521501', '_19522430', '_19521799', '_19529999', '_19522347']
+def read_path_img():
+    path = r'student_datasets'
+    return os.listdir(path)
 
+#people = ['_19521501', '_19522430', '_19521799', '_19529999', '_19522347']
+people = read_path_img()
 DIR = r'student_datasets'
 haar_cascade = cv.CascadeClassifier('haar_face.xml')
 
