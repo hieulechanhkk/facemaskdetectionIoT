@@ -114,10 +114,16 @@ while True:
             cv2.rectangle(image, (x0, y0), (x1, y1), color, 2)
 
         cv2.imshow('Image', image)
-        key = cv2.waitKey(1)
-        if key == 27:
+        key = cv2.waitKey(10) & 0xFF
+        if key == 27 or key == ord('q'):
             break
     except:
-        print("Error")
+        ret, image = vs.read()
+        image = cv2.flip(image, 1)
+        image = imutils.resize(image, width=800)
+        cv2.imshow('Image', image)
+        key = cv2.waitKey(10) & 0xFF
+        if key == 27 or key == ord('q'):
+            break
 cv2.destroyAllWindows()
 vs.stop()
