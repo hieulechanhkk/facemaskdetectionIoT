@@ -125,10 +125,6 @@ while True:
         image = cv2.flip(image, 1)
         image = imutils.resize(image, width=800)
         cv2.imshow('Image', image)
-        if (flagNMask == 0):
-            print("Send Data No Mask")  # $0
-            flagMask = 0
-            flagNMask = 1
         key = cv2.waitKey(10) & 0xFF
         if key == 27 or key == ord('q'):
             break
