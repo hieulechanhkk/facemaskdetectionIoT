@@ -45,10 +45,6 @@ arduino = SerialObject('COM6', 115200)
 prototxtPath = r'face_detect/deploy.prototxt.txt'
 weightPath = r'face_detect/res10_300x300_ssd_iter_140000.caffemodel'
 
-haar_cascade = cv2.CascadeClassifier(r'face_recognize/haar_face.xml')
-CATEGORIES = ['_19521501', '_19522430', '_19521799', '_19529999', '_19522347']
-face_recognizer = cv2.face.LBPHFaceRecognizer_create()
-face_recognizer.read('face_recognize/face_trained.yml')
 
 model = load_model("mask_detector.model")
 faceNet = cv2.dnn.readNet(prototxtPath, weightPath)
@@ -63,8 +59,6 @@ while True:
         image = cv2.flip(image, 1)
         image = imutils.resize(image, width=800)
 
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        faces_rect = haar_cascade.detectMultiScale(gray, 1.1, 4)
         (h, w) = image.shape[:2]
         blob = cv2.dnn.blobFromImage(image, 1.0, (224, 224),
                                      (104.0, 177.0, 123.0))
@@ -103,10 +97,7 @@ while True:
             (with_mask, without_mask) = pred
 
             label = "Mask" if with_mask > without_mask else "Without Mask"
-            student_code = 0
-            if label == 'Without Mask':
-                box = (x0, y0 - 25, x1, y1)
-                face_profile(faces_rect, (255, 255, 255), gray, box, image)
+
             if with_mask > without_mask:
                 if (flagMask == 0):
                     print("Send Data Mask")  # $1
