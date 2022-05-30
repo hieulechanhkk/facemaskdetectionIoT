@@ -96,18 +96,18 @@ while True:
             (with_mask, without_mask) = pred
 
             label = "Mask" if with_mask > without_mask else "Without Mask"
-            # if with_mask > without_mask:
-            #     if (flagMask == 0):
-            #         print("Send Data Mask")  # $1
-            #         flagMask = 1
-            #         flagNMask = 0
-            #         arduino.sendData([1])
-            # else:
-            #     if (flagNMask == 0):
-            #         print("Send Data No Mask")  # $0
-            #         flagMask = 0
-            #         flagNMask = 1
-            #         arduino.sendData([0])
+            if with_mask > without_mask:
+                if (flagMask == 0):
+                    print("Send Data Mask")  # $1
+                    flagMask = 1
+                    flagNMask = 0
+                    # arduino.sendData([1])
+            else:
+                if (flagNMask == 0):
+                    print("Send Data No Mask")  # $0
+                    flagMask = 0
+                    flagNMask = 1
+                    # arduino.sendData([0])
             color = (0, 255, 0) if label == "Mask" else (0, 0, 255)
             cv2.rectangle(image, (x0, y0 - 23), (x1, y0 - 3), color, -2)
             cv2.putText(image, label, (x0 + 5, y0 - 9), cv2.FONT_HERSHEY_SIMPLEX, 0.50, (255, 255, 255), 2)
