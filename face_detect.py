@@ -1,5 +1,5 @@
 # import numpy as np
-# import time
+import time
 import cv2
 from imutils.video import VideoStream
 import imutils
@@ -59,12 +59,12 @@ vs = VideoStream(src=0).start()
 flagNMask = 0
 flagMask = 0
 
-
-client1= paho.Client("control1")                           #create client object
-client1.on_publish = on_publish                          #assign function to callback
-client1.connect(broker,port)                                 #establish connection
-
+client1 = paho.Client("control1")  # create client object
+client1.on_publish = on_publish  # assign function to callback
+client1.connect(broker, port)
 while True:
+      # establish connection
+
     try:
         image = vs.read()
         image = cv2.flip(image, 1)
@@ -116,6 +116,7 @@ while True:
                     flagNMask = 0
                     rett = client1.publish("project/mask", "1")
                     # arduino.sendData([1])
+
             else:
                 if (flagNMask == 0):
                     print("Send Data No Mask")  # $0
@@ -137,13 +138,9 @@ while True:
         image = cv2.flip(image, 1)
         image = imutils.resize(image, width=800)
         cv2.imshow('Image', image)
-        if (flagNMask == 0):
-            print("Send Data No Mask")  # $0
-            rett = client1.publish("project/mask", "0")
-            flagMask = 0
-            flagNMask = 1
         key = cv2.waitKey(10) & 0xFF
         if key == 27 or key == ord('q'):
             break
+client1.disconnect()
 cv2.destroyAllWindows()
 vs.stop()
