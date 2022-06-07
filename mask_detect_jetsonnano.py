@@ -60,7 +60,6 @@ faceNet = cv2.dnn.readNet(prototxtPath, weightPath)
 vs = cv2.VideoCapture(gstreamer_pipeline(), cv2.CAP_GSTREAMER)
 flagNMask = 0
 flagMask = 0
-ser = serial.Serial(port='/dev/ttyUSB0', baudrate=115200, timeout=0.5)
 
 client1 = paho.Client("control1")  # create client object
 client1.on_publish = on_publish  # assign function to callback
