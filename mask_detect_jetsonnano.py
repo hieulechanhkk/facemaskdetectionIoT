@@ -12,6 +12,12 @@ from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from tensorflow.keras.models import load_model
 import serial
 
+import paho.mqtt.client as paho
+broker="broker.hivemq.com"
+port=1883
+def on_publish(client,userdata,result):             #create function for callback
+    print("data published \n")
+    pass
 
 
 
@@ -56,7 +62,9 @@ flagNMask = 0
 flagMask = 0
 ser = serial.Serial(port='/dev/ttyUSB0', baudrate=115200, timeout=0.5)
 
-
+client1 = paho.Client("control1")  # create client object
+client1.on_publish = on_publish  # assign function to callback
+client1.connect(broker, port)
 while True:
     try:
         ret, image = vs.read()
@@ -106,14 +114,14 @@ while True:
                     print("Send Data Mask")  # $1
                     flagMask = 1
                     flagNMask = 0
-                    ser.write(bytes(1, 'utf-8'))
+                    rett = client1.publish("project/mask", "1")
                     # arduino.sendData([1])
             else:
                 if (flagNMask == 0):
                     print("Send Data No Mask")  # $0
                     flagMask = 0
                     flagNMask = 1
-                    ser.write(bytes(0, 'utf-8'))
+                    rett = client1.publish("project/mask", "0")
                     # arduino.sendData([0])
             color = (0, 255, 0) if label == "Mask" else (0, 0, 255)
             cv2.rectangle(image, (x0, y0 - 23), (x1, y0 - 3), color, -2)
@@ -132,6 +140,6 @@ while True:
         key = cv2.waitKey(10) & 0xFF
         if key == 27 or key == ord('q'):
             break
-ser.close()
+client1.disconnect()
 cv2.destroyAllWindows()
 vs.stop()
