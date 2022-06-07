@@ -141,5 +141,7 @@ while True:
         key = cv2.waitKey(10) & 0xFF
         if key == 27 or key == ord('q'):
             break
+
+client1.disconnect()
 cv2.destroyAllWindows()
 vs.stop()
