@@ -113,14 +113,14 @@ while True:
                     print("Send Data Mask")  # $1
                     flagMask = 1
                     flagNMask = 0
-                    rett = client1.publish("project/mask", "1")
+                    retmask = client1.publish("project/mask", "1")
                     # arduino.sendData([1])
             else:
                 if (flagNMask == 0):
                     print("Send Data No Mask")  # $0
                     flagMask = 0
                     flagNMask = 1
-                    rett = client1.publish("project/mask", "0")
+                    retnomask = client1.publish("project/mask", "0")
                     # arduino.sendData([0])
             color = (0, 255, 0) if label == "Mask" else (0, 0, 255)
             cv2.rectangle(image, (x0, y0 - 23), (x1, y0 - 3), color, -2)
