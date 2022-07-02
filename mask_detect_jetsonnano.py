@@ -5,7 +5,7 @@ from imutils.video import VideoStream
 import imutils
 # from PIL import Image
 import numpy as np
-
+import time
 from tensorflow.keras.preprocessing.image import img_to_array
 # from keras.utils.np_utils import to_categorical
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
@@ -55,7 +55,7 @@ weightPath = r'face_detect/res10_300x300_ssd_iter_140000.caffemodel'
 
 
 model = load_model("mask_detector.model")
-faceNet = cv2.dnn.readNet(prototxtPath, weightPath)
+faceNet = cv2.dnn.readNetFromCaffe(prototxtPath, weightPath)
 
 vs = cv2.VideoCapture(gstreamer_pipeline(), cv2.CAP_GSTREAMER)
 flagNMask = 0
@@ -65,6 +65,10 @@ client1 = paho.Client("control1")  # create client object
 client1.on_publish = on_publish  # assign function to callback
 client1.connect(broker, port)
 client1.loop_start()
+
+prev_frame_time = 0
+
+new_frame_time = 0
 while True:
     try:
         ret, image = vs.read()
@@ -77,10 +81,15 @@ while True:
         faceNet.setInput(blob)
         detections = faceNet.forward()
 
+        new_frame_time = time.time()
+        fps = 1 / (new_frame_time - prev_frame_time)
+        prev_frame_time = new_frame_time
         faces = []
         preds = []
         locs = []
+        fps = int(fps)
 
+        fps = str(fps)
         for i in range(0, detections.shape[2]):
             confidence = detections[0, 0, i, 2]
 
@@ -126,6 +135,8 @@ while True:
             color = (0, 255, 0) if label == "Mask" else (0, 0, 255)
             cv2.rectangle(image, (x0, y0 - 23), (x1, y0 - 3), color, -2)
             cv2.putText(image, label, (x0 + 5, y0 - 9), cv2.FONT_HERSHEY_SIMPLEX, 0.50, (255, 255, 255), 2)
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            cv2.putText(image, fps, (7, 70), font, 3, (100, 255, 0), 3, cv2.LINE_AA)
             cv2.rectangle(image, (x0, y0), (x1, y1), color, 2)
 
         cv2.imshow('Image', image)
