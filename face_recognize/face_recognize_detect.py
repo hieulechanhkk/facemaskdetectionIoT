@@ -34,7 +34,7 @@ def gstreamer_pipeline(
     )
 #CATEGORIES = ['_19521501', '_19522430', '_19521799', '_19529999', '_19522347']
 CATEGORIES = read_path_img()
-face_recognizer = cv2.LBPHFaceRecognizer_create()
+face_recognizer = cv2.face.LBPHFaceRecognizer_create()
 face_recognizer.read('face_trained.yml')
 vs = cv2.VideoCapture(gstreamer_pipeline(), cv2.CAP_GSTREAMER)
 while True:
