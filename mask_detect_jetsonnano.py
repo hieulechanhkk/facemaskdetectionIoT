@@ -138,7 +138,12 @@ while True:
             (with_mask, without_mask) = pred
 
             label = "Mask" if with_mask > without_mask else "Without Mask"
-
+            color = (0, 255, 0) if label == "Mask" else (0, 0, 255)
+            cv2.rectangle(image, (x0, y0 - 23), (x1, y0 - 3), color, -2)
+            cv2.putText(image, label, (x0 + 5, y0 - 9), cv2.FONT_HERSHEY_SIMPLEX, 0.50, (255, 255, 255), 2)
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            cv2.putText(image, fps, (7, 70), font, 3, (100, 255, 0), 3, cv2.LINE_AA)
+            cv2.rectangle(image, (x0, y0), (x1, y1), color, 2)
 
             if with_mask > without_mask:
                 if (flagMask == 0):
@@ -160,12 +165,7 @@ while True:
                                            "Unknown", dt_string)
                     preLabel = label
                     # arduino.sendData([0])
-            color = (0, 255, 0) if label == "Mask" else (0, 0, 255)
-            cv2.rectangle(image, (x0, y0 - 23), (x1, y0 - 3), color, -2)
-            cv2.putText(image, label, (x0 + 5, y0 - 9), cv2.FONT_HERSHEY_SIMPLEX, 0.50, (255, 255, 255), 2)
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            cv2.putText(image, fps, (7, 70), font, 3, (100, 255, 0), 3, cv2.LINE_AA)
-            cv2.rectangle(image, (x0, y0), (x1, y1), color, 2)
+
 
         cv2.imshow('Image', image)
         key = cv2.waitKey(10) & 0xFF
