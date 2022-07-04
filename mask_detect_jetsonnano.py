@@ -10,9 +10,31 @@ from tensorflow.keras.preprocessing.image import img_to_array
 # from keras.utils.np_utils import to_categorical
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from tensorflow.keras.models import load_model
+from datetime import datetime
 import serial
 
 import paho.mqtt.client as paho
+
+
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import storage
+
+
+def init_firebase_authorize():
+    cred = credentials.Certificate("firebase/aiotformaskdetection-firebase-adminsdk-s79ro-5f7cc5b7d1.json")
+    firebase_admin.initialize_app(cred, {'storageBucket': 'aiotformaskdetection.appspot.com'})
+
+def Upload_img_to_firebase(img_path, student_code, time):
+    bucket = storage.bucket()
+    filename = student_code + "_" + time + '.jpg'
+    blob = bucket.blob(f'{student_code}/{filename}')
+    blob.upload_from_filename(img_path)
+
+def get_date_time():
+    now = datetime.now()
+    dt_string = now.strftime("%d%m%Y_%Hh%Mm%Ss")
+    return dt_string
 broker="broker.hivemq.com"
 port=1883
 def on_publish(client,userdata,result):             #create function for callback
@@ -130,6 +152,12 @@ while True:
                     flagMask = 0
                     flagNMask = 1
                     rett = client1.publish("project/mask", "0")
+
+                    dt_string = get_date_time()
+                    cv2.imwrite(f'Photos_capture/Unknown/Unknown_{dt_string}.jpg', image)
+                    Upload_img_to_firebase(f'Photos_capture/Unknown/Unknown_{dt_string}.jpg',
+                                           "Unknown", dt_string)
+                    preLabel = label
                     # arduino.sendData([0])
             color = (0, 255, 0) if label == "Mask" else (0, 0, 255)
             cv2.rectangle(image, (x0, y0 - 23), (x1, y0 - 3), color, -2)
