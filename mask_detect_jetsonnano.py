@@ -75,9 +75,8 @@ while True:
         image = cv2.flip(image, 1)
         image = imutils.resize(image, width=800)
         (h, w) = image.shape[:2]
-        # blob = cv2.dnn.blobFromImage(image, 1.0, (224, 224),
-        #                              (104.0, 177.0, 123.0))
-        blob = cv2.dnn.blobFromImage(cv2.resize(image, (300, 300)), 1.0, (300, 300), (104.0, 177.0, 123.0))
+        blob = cv2.dnn.blobFromImage(image, 1.0, (224, 224),
+                                     (104.0, 177.0, 123.0))
         faceNet.setInput(blob)
         detections = faceNet.forward()
 
