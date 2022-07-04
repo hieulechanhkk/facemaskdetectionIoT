@@ -7,12 +7,36 @@ haar_casecade = cv2.CascadeClassifier('haar_face.xml')
 def read_path_img():
     path = r'student_datasets'
     return os.listdir(path)
-
+def gstreamer_pipeline(
+    capture_width=1920,
+    capture_height=1080,
+    display_width=960,
+    display_height=540,
+    framerate=30,
+    flip_method=0,
+):
+    return (
+        "nvarguscamerasrc ! "
+        "video/x-raw(memory:NVMM), "
+        "width=(int)%d, height=(int)%d, framerate=(fraction)%d/1 ! "
+        "nvvidconv flip-method=%d ! "
+        "video/x-raw, width=(int)%d, height=(int)%d, format=(string)BGRx ! "
+        "videoconvert ! "
+        "video/x-raw, format=(string)BGR ! appsink drop=True"
+        % (
+            capture_width,
+            capture_height,
+            framerate,
+            flip_method,
+            display_width,
+            display_height,
+        )
+    )
 #CATEGORIES = ['_19521501', '_19522430', '_19521799', '_19529999', '_19522347']
 CATEGORIES = read_path_img()
-face_recognizer = cv2.face.LBPHFaceRecognizer_create()
+face_recognizer = cv2.LBPHFaceRecognizer_create()
 face_recognizer.read('face_trained.yml')
-vs = VideoStream(src=0).start()
+vs = cv2.VideoCapture(gstreamer_pipeline(), cv2.CAP_GSTREAMER)
 while True:
     image = vs.read()
     image = cv2.flip(image, 1)
